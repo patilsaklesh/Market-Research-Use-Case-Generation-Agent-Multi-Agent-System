@@ -6,6 +6,11 @@ __pycache__/
 # C extensions
 *.so
 
+---------------------
+kaggle.json
+extra.py
+.vscode
+
 # Distribution / packaging
 .Python
 build/
