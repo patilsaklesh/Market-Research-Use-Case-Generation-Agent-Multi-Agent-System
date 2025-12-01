@@ -68,13 +68,9 @@ class MarketState(TypedDict):
 
 def research_agent_node(state: MarketState) -> MarketState:
     query = f"{RESEARCH_AGENT_PROMPT}\n\nResearch: {state['query']}"
-
-    # Tavily Search Tool (same as your code)
     web_data = search_tool.invoke({"query": state["query"]})
     web_str = str(web_data)
-
     response = llm.invoke(query + "\n\nWeb Data:\n" + web_str)
-
     state["research"] = response.content[:600]
     return state
 
@@ -82,9 +78,7 @@ def research_agent_node(state: MarketState) -> MarketState:
 def use_case_agent_node(state: MarketState) -> MarketState:
     truncated_research = (state["research"] or "")[:300]
     query = f"{USE_CASE_AGENT_PROMPT}\n\nBased on: {truncated_research}"
-
     response = llm.invoke(query)
-
     state["use_cases"] = response.content[:400]
     return state
 
@@ -131,7 +125,6 @@ graph.add_edge("resource_agent", "proposal_agent")
 graph.add_edge("proposal_agent", END)
 
 app = graph.compile()
-
 
 def orchestrate_agents_langgraph(company: str):
     init_state: MarketState = {
